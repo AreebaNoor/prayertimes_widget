@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Prayer times</title>
+
+    <style>
+        @font-face {
+            font-family: ATypewriterForMe;
+            src: url(./Media/ATypewriterForMe.ttf);
+        }
+        .flexDiv {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        p {
+            background-color: rgb(208, 199, 200);
+            font-family: ATypewriterForMe;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 7px 10px;
+            width: 150px;
+            text-align: left;
+            margin: 0; 
+        }
+    </style>
+
+</head>
+<body>
+    <div class="flexDiv">
+        <p id="fajrP"></p>
+        <p id="sunrizeP"></p>
+        <p id="dhuhrP"></p>
+        <p id="asrP"></p>
+        <p id="maghribP"></p>
+        <p id="ishaP"></p>
+    </div>
+
+    <script>
+        let fajrEl = document.getElementById("fajrP");
+        let sunriseEl = document.getElementById("sunrizeP");
+        let dhuhrEl = document.getElementById("dhuhrP");
+        let asrEl = document.getElementById("asrP")
+        let maghribEl = document.getElementById("maghribP");
+        let ishaEl = document.getElementById("ishaP");
+
+        let dates1 = [];
+        let dates2 = [];
+
+        // Create today's date
+        let todayDate = new Date();
+        let dd = String(todayDate.getDate()).padStart(2, '0');
+        let mm = String(todayDate.getMonth() + 1).padStart(2, '0'); //January is 0!
+        let yyyy = todayDate.getFullYear();
+        todayDate = dd + "-" + mm + "-" + yyyy;
+
+        //todayDate = "22-04-2023"; //test
+        //let i = 0;
+
+        const aladhanRequestMarch = "https://api.aladhan.com/v1/calendar/2023/3?latitude=59.91139&longitude=10.7522&method=3"
+        const aladhanRequestApril = "https://api.aladhan.com/v1/calendar/2023/4?latitude=59.91139&longitude=10.7522&method=3"
+        async function fetchApi3(aladhanRequestMarch, aladhanRequestApril) {
+            const response1 = await fetch(aladhanRequestMarch);
+            const response2 = await fetch(aladhanRequestApril);
+            let data1 = await response1.json();
+            let data2 = await response2.json();
+
+            console.log(data1);
+            console.log(data2);
+
+            for (let a=0; a<data1.data.length; a++) {
+                dates1.push(data1.data[a].date.gregorian.date)
+            }
+            for (let b=0; b<data2.data.length; b++) {
+                dates2.push(data2.data[b].date.gregorian.date)
+            }
+
+            if (dates1.includes(todayDate) == true) {
+                for (let i=0; i<dates1.length; i++) {
+                    if (todayDate == dates1[i]) {
+                        fajrEl.innerHTML = "Fajr: " + data1.data[i].timings.Fajr.toString().slice(0, 5);
+                        sunriseEl.innerHTML = "Sunrise: " + data1.data[i].timings.Sunrise.toString().slice(0, 5);
+                        dhuhrEl.innerHTML = "Dhuhr: " + data1.data[i].timings.Dhuhr.toString().slice(0, 5);
+                        asrEl.innerHTML =  "Asr: " + data1.data[i].timings.Asr.toString().slice(0, 5);
+                        maghribEl.innerHTML = "Maghrib: " + data1.data[i].timings.Maghrib.toString().slice(0, 5);
+                        ishaEl.innerHTML = "Isha: " + data1.data[i].timings.Isha.toString().slice(0, 5);
+                    }
+                }
+            }
+
+            else if (dates2.includes(todayDate) == true) {
+                for (let j=0; j<dates2.length; j++) {
+                    if (todayDate == dates2[j]) {
+                        fajrEl.innerHTML = "Fajr: " + data2.data[j].timings.Fajr.toString().slice(0, 5);
+                        sunriseEl.innerHTML = "Sunrise: " + data1.data[i].timings.Sunrise.toString().slice(0, 5);
+                        dhuhrEl.innerHTML = "Dhuhr: " + data2.data[j].timings.Dhuhr.toString().slice(0, 5);
+                        asrEl.innerHTML = "Asr: " + data2.data[j].timings.Asr.toString().slice(0, 5);
+                        maghribEl.innerHTML = "Maghrib: " + data2.data[j].timings.Maghrib.toString().slice(0, 5);
+                        ishaEl.innerHTML = "Isha: " + data2.data[j].timings.Isha.toString().slice(0, 5);
+                    }
+                }
+            }
+            else {
+                fajrEl.innerHTML = "-";
+                sunriseEl.innerHTML = "-";
+                dhuhrE.innerHTML = "-";
+                asrEl.innerHTMl = "-";
+                maghrib.innerHTML = "-";
+                ishaEl.innerHTML = "-";
+            }
+
+        }
+        datasett = fetchApi3(aladhanRequestMarch, aladhanRequestApril);
+
+    </script>
+    
+</body>
+</html>
